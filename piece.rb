@@ -1,3 +1,4 @@
+# encoding: utf-8
 class InvalidMoveError < StandardError
 end
 
@@ -6,15 +7,12 @@ class Piece
   attr_accessor :pos, :promoted
 
   def initialize(pos, color, board, promoted = false)
-    @pos = pos
-    @color = color
-    @board = board
-    @promoted = promoted
+    @pos, @color, @board, @promoted = pos, color, board, promoted
   end
 
   def to_s
-    return "K" if promoted
-    color == :red ? "R" : "B"
+    return "\u2B20" if promoted
+    "\u2B2D"
   end
 
   def perform_moves(moves)
@@ -50,7 +48,7 @@ class Piece
   end
 
   def perform_slide(move)
-    return false unless (board.on_board?(move) &&
+    return false unless (Board.on_board?(move) &&
                         board.unoccupied?(move) &&
                         sliding_moves.include?(move))
     board[move], board[pos] = self, nil
@@ -60,7 +58,7 @@ class Piece
 
   def perform_jump(move)
     mid = mid(pos, move)
-    return false unless (board.on_board?(move) &&
+    return false unless (Board.on_board?(move) &&
                         board.unoccupied?(move) &&
                         (board.occupied?(mid) == enemy_color) &&
                         jumping_moves.include?(move))

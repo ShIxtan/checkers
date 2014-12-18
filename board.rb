@@ -1,3 +1,4 @@
+# encoding: utf-8
 require_relative 'piece'
 require 'colorize'
 
@@ -10,31 +11,6 @@ class Board
     @grid = Array.new(8) { Array.new(8)}
     @cursor = [0,0]
     fill_board unless empty
-  end
-
-  def fill_board
-    fill_white
-    fill_black
-  end
-
-  def fill_white
-    12.times do |i|
-      x = (i * 2) / 8
-      y = 1 + ((i * 2) % 8)
-      y -= 1 if x.odd?
-      pos = [x,y]
-      add_piece(pos, :blue)
-    end
-  end
-
-  def fill_black
-    12.times do |i|
-      x = 5 + ((i * 2) / 8)
-      y = (i * 2) % 8
-      y -= 1 if x.even?
-      pos = [x,y]
-      add_piece(pos, :red)
-    end
   end
 
   def render
@@ -67,10 +43,6 @@ class Board
     dup_board
   end
 
-  def on_board?(pos)
-    pos.all? {|coord| coord.between?(0,7)}
-  end
-
   def pieces
     grid.flatten.compact
   end
@@ -81,10 +53,6 @@ class Board
 
   def occupied?(pos)
     unoccupied?(pos) ? false : self[pos].color
-  end
-
-  def add_piece(pos, color)
-    self[pos] = Piece.new(pos, color, self)
   end
 
   def [](pos)
@@ -102,4 +70,40 @@ class Board
     return :red if pieces.none? { |piece| piece.color == :blue }
     false
   end
+
+  def self.on_board?(pos)
+    pos.all? {|coord| coord.between?(0,7)}
+  end
+
+  private
+
+  def fill_board
+    fill_white
+    fill_black
+  end
+
+  def fill_white
+    12.times do |i|
+      x = (i * 2) / 8
+      y = 1 + ((i * 2) % 8)
+      y -= 1 if x.odd?
+      pos = [x,y]
+      add_piece(pos, :blue)
+    end
+  end
+
+  def fill_black
+    12.times do |i|
+      x = 5 + ((i * 2) / 8)
+      y = (i * 2) % 8
+      y -= 1 if x.even?
+      pos = [x,y]
+      add_piece(pos, :red)
+    end
+  end
+
+  def add_piece(pos, color)
+    self[pos] = Piece.new(pos, color, self)
+  end
+
 end
