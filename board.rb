@@ -3,7 +3,8 @@ require 'colorize'
 
 class Board
 
-  attr_accessor :grid, :cursor, :message
+  attr_reader :grid
+  attr_accessor :cursor, :message
 
   def initialize(empty = false)
     @grid = Array.new(8) { Array.new(8)}
@@ -94,5 +95,11 @@ class Board
   def []=(pos, value)
     x, y = pos
     grid[x][y] = value
+  end
+
+  def won?
+    return :white if pieces.none? { |piece| piece.color == :red }
+    return :red if pieces.none? { |piece| piece.color == :blue }
+    false
   end
 end

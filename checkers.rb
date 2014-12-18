@@ -14,15 +14,28 @@ class Checkers
   end
 
   def play
-    loop do
+    player = player1
+    until board.won?
       begin
-        moves = player1.turn
-        board[moves.first].perform_moves(moves.drop(1))
-      rescue InvalidMoveError
-        board.message = "bad move"
+        moves = player.turn
+        piece = board[moves.first]
+        if !piece.nil? && piece.color == player.color
+          piece.perform_moves(moves.drop(1))
+        else
+          raise InvalidMoveError.new "not yours"
+        end
+      rescue InvalidMoveError => e
+        board.message = e.message
         retry
       end
+      player = toggle_player(player)
     end
+
+    puts "#{player.name} wins!"
+  end
+
+  def toggle_player(player)
+    player == player1 ? player2 : player1
   end
 end
 

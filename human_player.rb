@@ -6,7 +6,7 @@ class HumanPlayer < Player
     choices = []
     char = nil
 
-    until char == " "
+    until (char == " " && choices.count > 1 )
       board.render
       char = read_char
       if char == "\r"

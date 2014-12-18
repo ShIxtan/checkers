@@ -2,7 +2,8 @@ class InvalidMoveError < StandardError
 end
 
 class Piece
-  attr_accessor :pos, :color, :board, :promoted
+  attr_reader :color, :board
+  attr_accessor :pos, :promoted
 
   def initialize(pos, color, board, promoted = false)
     @pos = pos
@@ -12,10 +13,7 @@ class Piece
   end
 
   def to_s
-    color == :red ? "R" : "B"
-  end
-
-  def inspect
+    return "K" if promoted
     color == :red ? "R" : "B"
   end
 
@@ -25,6 +23,7 @@ class Piece
     else
       raise InvalidMoveError.new
     end
+    maybe_promote
   end
 
   def valid_move_sequence?(moves)
@@ -40,11 +39,11 @@ class Piece
     if moves.count == 1
       if perform_slide(moves.first)
       else
-        raise InvalidMoveError.new unless perform_jump(moves.first)
+        raise InvalidMoveError.new("Invalid") unless perform_jump(moves.first)
       end
     else
       moves.each do |move|
-        raise InvalidMoveError.new unless perform_jump(move)
+        raise InvalidMoveError.new("Invalid") unless perform_jump(move)
       end
     end
     true
@@ -101,7 +100,7 @@ class Piece
   def move_diffs
     dir = (color == :red ? -1 : 1)
     moves = [[dir, -1], [dir, 1]]
-    moves + [[dir * -1, -1],[dir * -1, 1]] if promoted
+    moves += [[dir * -1, -1],[dir * -1, 1]] if promoted
     moves
   end
 
@@ -110,6 +109,9 @@ class Piece
   end
 
   def maybe_promote
-    
+    if (color == :red && pos.first == 0) ||
+       (color == :blue && pos.first == 7)
+      self.promoted = true
+    end
   end
 end
