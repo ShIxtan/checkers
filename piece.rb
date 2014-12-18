@@ -8,5 +8,31 @@ class Piece
     @promoted = promoted
   end
 
-  def
+  def to_s
+    color == :black ? "B" : "W"
+  end
+
+  def inspect
+    color == :black ? "B" : "W"
+  end
+
+  def perform_moves!()
+
+  end
+
+  def perform_slide()
+
+  end
+
+  def perform_jump()
+
+  end
+
+  def move_diffs
+
+  end
+
+  def maybe_promote
+
+  end
 end
