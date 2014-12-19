@@ -1,9 +1,10 @@
 require_relative 'board'
 require_relative 'human_player'
+require_relative 'computer_player'
 
 class Checkers
 
-  attr_accessor :board, :player1, :player2
+  attr_reader :board, :player1, :player2
 
   def initialize(player1, player2)
     @player1, @player2 = player1, player2
@@ -41,7 +42,7 @@ end
 
 if $PROGRAM_NAME == __FILE__
   aaron = HumanPlayer.new "Aaron"
-  blue = HumanPlayer.new "Blue"
+  blue = ComputerPlayer.new "Blue"
 
   game = Checkers.new(aaron, blue)
   game.play

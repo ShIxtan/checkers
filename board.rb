@@ -4,7 +4,6 @@ require 'colorize'
 
 class Board
 
-  attr_reader :grid
   attr_accessor :cursor, :message
 
   def initialize(empty = false)
@@ -16,7 +15,6 @@ class Board
   def render
     system("clear")
     grid.each_with_index do |row, i|
-      puts
       row.each_with_index do |tile, j|
         if tile.nil?
           str = "  "
@@ -27,24 +25,29 @@ class Board
         bg = :green if cursor == [i,j]
         print str.colorize(:background => bg)
       end
+      puts
     end
-    puts
     puts message.colorize(:yellow) if message
+    message = nil
   end
 
   def dup
     dup_board = Board.new(true)
 
     pieces.each do |piece|
-      piece_dup = piece.dup(dup_board)
-      dup_board[piece.pos] = piece_dup
+      dup_board[piece.pos] = piece.dup(dup_board)
     end
 
     dup_board
   end
 
-  def pieces
-    grid.flatten.compact
+  def pieces(color = nil)
+    pieces = grid.flatten.compact
+    if color
+      pieces.select { |piece| color == piece.color}
+    else
+      pieces
+    end
   end
 
   def unoccupied?(pos)
@@ -73,9 +76,11 @@ class Board
 
   def self.on_board?(pos)
     pos.all? {|coord| coord.between?(0,7)}
-  end
+  end    
 
   private
+
+  attr_reader :grid
 
   def fill_board
     fill_white
